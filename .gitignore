@@ -106,7 +106,6 @@ dist
 database.js
 .DS_Store
 config/
-images/
 data/
 nodemon.json
 server.cert

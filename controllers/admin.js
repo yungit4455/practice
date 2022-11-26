@@ -1,15 +1,10 @@
+const path = require('path');
+const fs = require('fs');
+
 const Product = require('../models/products');
 
 exports.getProducts = async (req, res, next) => {
     try {
-        // 테스트용 더미 product 생성
-        // const product = new Product({
-        //     title: 'test',
-        //     price: 12.99,
-        //     description: 'TESTSSSSS',
-        //     imageUrl: 'dads'
-        // });
-        // product.save().then((result) = console.log('Dumy Create'));
         const products = await Product.find();
         res.render('admin/products', {
             prods: products,
@@ -24,7 +19,8 @@ exports.getProducts = async (req, res, next) => {
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {
         pageTitle: 'Add Product',
-        path: '/admin/add-product'
+        path: '/admin/add-product',
+        editing: false
     });
 };
 
@@ -37,16 +33,16 @@ exports.postAddProduct = async (req, res, next) => {
     if (!image) {
         res.redirect('/admin/add-product');
     }
-    // const imageUrl = image.path
+    const imageUrl = image.path;
 
     const product = new Product({
         title: title,
-        imageUrl: image,
+        imageUrl: imageUrl,
         price: price,
         description: description
     });
     try {
-        const result = await product.save();
+        await product.save();
         console.log('Created Product');
         res.redirect('/admin/products');
     } catch (err) {
@@ -54,12 +50,54 @@ exports.postAddProduct = async (req, res, next) => {
     }
 };
 
-exports.getUpdateProduct = async (req, res, next) => {
-
+exports.getEditProduct = async (req, res, next) => {
+    const editMode = req.query.edit;
+    if (!editMode) {
+        return res.redirect('/');
+    }
+    const productId = req.params.productId;
+    try {
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.redirect('/');
+        }
+        res.render('admin/edit-product', {
+            pageTitle: 'Edit Product',
+            path: '/admin/edit-product',
+            editing: editMode,
+            product: product
+        });
+    } catch (err) {
+        console.log(err);
+    }
 };
 
-exports.postUpdateProduct = async (req, res, next) => {
+exports.postEditProduct = async (req, res, next) => {
+    const productId = req.body.productId;
+    const updatedTitle = req.body.title;
+    const updatedPrice = req.body.price;
+    const updatedDescription = req.body.description;
+    const image = req.file;
 
+    try {
+        const product = await Product.findById(productId);
+        product.title = updatedTitle;
+        product.price = updatedPrice;
+        product.description = updatedDescription;
+        if (image) {
+            fs.unlink(product.imageUrl, (err) => {
+                if (err) {
+                    throw (err);
+                }
+            });
+            product.imageUrl = image.path;
+        }
+        await product.save();
+        console.log('Updated Product');
+        res.redirect('/');
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 exports.deleteProduct = async (req, res, next) => {

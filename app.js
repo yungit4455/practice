@@ -7,6 +7,7 @@ const multer = require('multer');
 const MONGODB = require('./config/db.json').MONGO_URL;
 
 const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/admin', adminRoutes);
+app.use(shopRoutes);
 
 mongoose.connect(MONGODB)
     .then(result => {
