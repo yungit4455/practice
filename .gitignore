@@ -107,6 +107,7 @@ database.js
 .DS_Store
 config/
 data/
+images/
 nodemon.json
 server.cert
 server.key

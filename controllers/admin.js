@@ -1,4 +1,3 @@
-const path = require('path');
 const fs = require('fs');
 
 const Product = require('../models/products');
@@ -31,7 +30,7 @@ exports.postAddProduct = async (req, res, next) => {
     const description = req.body.description;
 
     if (!image) {
-        res.redirect('/admin/add-product');
+        return res.redirect('/admin/add-product');
     }
     const imageUrl = image.path;
 
@@ -101,5 +100,17 @@ exports.postEditProduct = async (req, res, next) => {
 };
 
 exports.deleteProduct = async (req, res, next) => {
-
+    const productId = req.params.productId;
+    try {
+        const product = await Product.findById(productId);
+        fs.unlink(product.imageUrl, (err) => {
+            if (err) {
+                throw (err);
+            }
+        });
+        await Product.deleteOne();
+        console.log('Deleted Product');
+    } catch (err) {
+        console.log(err);
+    }
 };
