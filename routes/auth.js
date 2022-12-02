@@ -30,7 +30,6 @@ router.post('/signup',
         body('password').trim().isLength({ min: 5 }).isAlphanumeric(),
         body('confirmPassword').trim().custom((value, {req}) => {
             if (value !== req.body.password) {
-                console.log(req.body.email, req.body.password, req.body.confirmPassword);
                 throw new Error('Passwords have to match.');
             }
             return true;
