@@ -22,6 +22,7 @@
                     <div class="card__actions">
                         <a href="/admin/edit-product/<%= product._id %>?edit=true" class="btn">Edit</a>
                         <input type="hidden" value="<%= product._id %>" name="productId">
+                        <%- include('../includes/csrf.ejs') %>
                         <button class="btn" type="button" onclick="deleteProduct(this)">Delete</button>
                     </div>
                 <% } else { %>

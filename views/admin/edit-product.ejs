@@ -21,10 +21,11 @@
                 <label for="description">Description</label>
                 <input type="text" name="description" id="description" value="<% if (editing || hasError) { %><%= product.description %><% } %>">
             </div>
-            <button class="btn" type="submit"><% if (editing) { %>Update Product<% } else { %>Add Product <% } %></button>
+            <%- include('../includes/csrf.ejs') %>
             <% if (editing) { %>
                 <input type="hidden" name="productId" value="<%= product._id %>">
             <% } %>
+            <button class="btn" type="submit"><% if (editing) { %>Update Product<% } else { %>Add Product <% } %></button>
         </form>
     </main>
 <%- include('../includes/end.ejs') %>

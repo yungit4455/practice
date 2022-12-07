@@ -8,8 +8,15 @@
         <a href="/">Shit</a>
     </h1>
     <a href="/">Shop</a>
-    <a href="/admin/add-product">Add Product</a>
-    <a href="/admin/products">Admin Products</a>
-    <a href="/signup">Signup</a>
-    <a href="/login">Login</a>
+    <% if (isAuthenticated) { %>
+        <a href="/admin/add-product">Add Product</a>
+        <a href="/admin/products">Admin Products</a>
+        <form action="/logout" method="POST">
+            <%- include('../includes/csrf.ejs') %>
+            <button type="submit">Logout</button>
+        </form>
+    <% } else { %>
+        <a href="/signup">Signup</a>
+        <a href="/login">Login</a>
+    <% } %>
 </header>

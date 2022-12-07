@@ -45,7 +45,10 @@ exports.postLogin = async (req, res, next) => {
         } else {
             const doMatch = await bcrypt.compare(password, user.password);
             if (doMatch) {
+                req.session.isLoggedIn = true;
+                req.session.user = user;
                 console.log('Login Success');
+                await req.session.save();
                 return res.redirect('/');
             } else {
                 console.log('invalid email or password');
@@ -62,6 +65,15 @@ exports.postLogin = async (req, res, next) => {
     } catch (err) {
         console.log(err);
     } 
+};
+
+exports.postLogout = async (req, res, next) => {
+    try {
+        await req.session.destroy();
+        return res.redirect('/');
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 exports.getSignup = (req, res, next) => {
